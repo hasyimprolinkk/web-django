@@ -24,4 +24,10 @@ class ProductForm(ModelForm):
         widgets = {
             'description': forms.Textarea()
         }
+        labels = {
+            'name': 'Nama',
+            'price': 'Harga',
+            'category': 'Kategori',
+            'description': 'Deskripsi',
+        }
         
