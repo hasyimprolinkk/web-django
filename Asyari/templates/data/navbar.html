@@ -1,0 +1,16 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <img src="{% static '/images/logo.png' %}" id="logo">
+    <a class="navbar-brand" href="#">DJANGO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-link {% if menu == 'home' %} active {% endif %}" href="{% url 'home' %}">Dashboard</a>
+            <a class="nav-link {% if menu == 'products' %} active {% endif %}" href="{% url 'products' %}">Product</a>
+            {% comment %} <a class="nav-link {% if menu == 'custumer' %} active {% endif %}" href="{% url 'custumer' %}">Custumer</a> {% endcomment %}
+        </div>
+    </div>
+</nav>
