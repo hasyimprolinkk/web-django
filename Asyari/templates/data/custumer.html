@@ -78,7 +78,7 @@
                         <th>Update</th>
                         <th>Remove</th>
                     </tr>
-                    {% for tampil_order_custumer in data_order_custumer %}
+                    {% for tampil_order_custumer in halaman_order_custumer.object_list %}
                     <tr>
                         <td>{{ tampil_order_custumer.product }}</td>
                         <td>{{ tampil_order_custumer.product.category }}</td>
@@ -92,6 +92,29 @@
                     </tr>
                     {% endfor %}
                 </table>
+                <hr />
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if not previous %} disabled {% endif %}">
+                            <a class="page-link" href="{{ previous }}">Previous</a>
+                        </li>
+                        {% for n in halaman_order_custumer.paginator.page_range %}
+                        {% if halaman_order_custumer.number == n %}
+                        <li class="page-item active" aria>
+                            <span class="page-link">
+                                {{ n }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>
+                        {% elif n > halaman_order_custumer.number|add:-3 and n < halaman_order_custumer.number|add:3 %}
+                        <li class="page-item"><a class="page-link" href="?halaman={{ n }}">{{ n }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="page-item {% if not next %} disabled {% endif %}">
+                            <a class="page-link" href="{{ next }}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 # Create your views here.
+from django.core.paginator import Paginator
+
+
 from .models import *
 from .forms import OrderForm, ProductForm
 from .filters import OrderFilter
@@ -78,12 +81,28 @@ def custumer(request,pk):
     filter_order   = OrderFilter(request.GET, queryset=order_custumer)
     order_custumer = filter_order.qs
 
+    halaman_tampil = Paginator(order_custumer, 2)
+    halaman_url    = request.GET.get('halaman',1)
+    halaman_order  = halaman_tampil.get_page(halaman_url)
+
+    if halaman_order.has_previous():
+        url_previous = f'?halaman={halaman_order.previous_page_number()}'
+    else:
+        url_previous = ''
+    if halaman_order.has_next():
+        url_next = f'?halaman={halaman_order.next_page_number()}'
+    else:
+        url_next = ''
+
     context = {
         'judul': 'Halaman Konsumen',
         'custumer': detailcustumer,
-        'data_order_custumer':order_custumer,
+        # 'data_order_custumer':order_custumer,
+        'halaman_order_custumer':halaman_order,
         'data_total_custumer': total_custumer,
         'filter_data_order': filter_order,
+        'previous' : url_previous,
+        'next' : url_next,
     }
     return render(request, 'data/custumer.html', context)
 
