@@ -1,4 +1,5 @@
 {% extends "data/main.html" %}
+{% load widget_tweaks %}
 
 {% block content %}
 
@@ -34,7 +35,30 @@
         <div class="col">
             <div class="card card-body">
                 <form method="get">
-                    <button class="btn btn-primary" type="submit">Search</button>
+                    <div class="row">
+                        <div class="col">
+                            Product:
+                            {{ filter_data_order.form.product | add_class:"form-control"}}
+                        </div>
+                        <div class="col">
+                            Status:
+                            {{ filter_data_order.form.status | add_class:"form-control"}}
+                        </div>
+                        <div class="col"> note:
+                            {{ filter_data_order.form.note | add_class:"form-control"}}
+                        </div>
+                        <div class="col">
+                            From Date:
+                            {{ filter_data_order.form.tglmulai | add_class:"form-control" |attr:"type:date"}}
+                        </div>
+                        <div class="col">
+                            Until Date:
+                            {{ filter_data_order.form.tglakhir | add_class:"form-control" |attr:"type:date"}}
+                        </div>
+                        <div class="col mt-4">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -48,6 +72,7 @@
                     <tr>
                         <th>Product</th>
                         <th>Category</th>
+                        <th>Note</th>
                         <th>Date Orderd</th>
                         <th>Status</th>
                         <th>Update</th>
@@ -57,10 +82,13 @@
                     <tr>
                         <td>{{ tampil_order_custumer.product }}</td>
                         <td>{{ tampil_order_custumer.product.category }}</td>
+                        <td>{{ tampil_order_custumer.note}}</td>
                         <td>{{ tampil_order_custumer.date_created|date:"l, d N Y" }}</td>
                         <td>{{ tampil_order_custumer.status }}</td>
-                        <td><a href="{% url 'update_order' tampil_order_custumer.id %}" class="btn btn-success">Update</a></td>
-                        <td><a href="{% url 'delete_order' tampil_order_custumer.id %}" class="btn btn-danger">Delete</a></td>
+                        <td><a href="{% url 'update_order' tampil_order_custumer.id %}"
+                                class="btn btn-success">Update</a></td>
+                        <td><a href="{% url 'delete_order' tampil_order_custumer.id %}"
+                                class="btn btn-danger">Delete</a></td>
                     </tr>
                     {% endfor %}
                 </table>

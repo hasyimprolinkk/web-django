@@ -3,6 +3,7 @@ from django.http import HttpResponse
 # Create your views here.
 from .models import *
 from .forms import OrderForm, ProductForm
+from .filters import OrderFilter
 
 def home(request):
     list_custumer = Custumer.objects.all()
@@ -74,12 +75,15 @@ def custumer(request,pk):
     detailcustumer = Custumer.objects.get(id=pk)
     order_custumer = detailcustumer.order_set.all()
     total_custumer = order_custumer.count()
+    filter_order   = OrderFilter(request.GET, queryset=order_custumer)
+    order_custumer = filter_order.qs
 
     context = {
         'judul': 'Halaman Konsumen',
         'custumer': detailcustumer,
         'data_order_custumer':order_custumer,
         'data_total_custumer': total_custumer,
+        'filter_data_order': filter_order,
     }
     return render(request, 'data/custumer.html', context)
 
