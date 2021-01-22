@@ -8,13 +8,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-        {% if user.is_authenticated %}
+        {% if request.user.is_staff %}
             <a class="nav-link {% if menu == 'home' %} active {% endif %}" href="{% url 'home' %}">Dashboard</a>
             <a class="nav-link {% if menu == 'products' %} active {% endif %}" href="{% url 'products' %}">Product</a>
             {% comment %} <a class="nav-link {% if menu == 'custumer' %} active {% endif %}"
                 href="{% url 'custumer' %}">Custumer</a> {% endcomment %}
-        {% else %}
-            <a class="navlink active" href="#"><b>Silakan Login terlebih dahulu</b></a>
         {% endif %}
         </div>
     </div>

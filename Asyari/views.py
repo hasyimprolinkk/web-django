@@ -5,58 +5,65 @@ from django.core.paginator import Paginator
 # from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 
 from .models import *
 from .forms import OrderForm, ProductForm, RegisterForm
 from .filters import OrderFilter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .decorators import tolakhalaman_ini, ijinkan_pengguna, pilihan_login
 
+@tolakhalaman_ini
 def loginPage (request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        formlogin = AuthenticationForm
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+    formlogin = AuthenticationForm
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            cocokan = authenticate(request, username=username, password=password )
-            if cocokan is not None:
-                login(request, cocokan)
-                return redirect('home')
+        cocokan = authenticate(request, username=username, password=password )
+        if cocokan is not None:
+            login(request, cocokan)
+            return redirect('home')
 
-        context = {
-            'judul': 'Halaman Login',
-            'menu': 'login',
-            'tampillogin' : formlogin,
-        }
-        return render(request, 'data/login.html', context)
+    context = {
+        'judul': 'Halaman Login',
+        'menu': 'login',
+        'tampillogin' : formlogin,
+    }
+    return render(request, 'data/login.html', context)
 
 def logoutPage(request):
     logout(request)
     return redirect('login')
 
+@tolakhalaman_ini
 def registerPage (request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        formregister = RegisterForm()
-        if request.method == 'POST':
-            formregister = RegisterForm(request.POST)
-            if formregister.is_valid():
-                nilaiusername = formregister.cleaned_data.get('username')
-                messages.success(request, f'Username Anda adalah {nilaiusername}')
-                formregister.save()
-                return redirect('login')
-        context = {
-            'judul': 'Halaman Register',
-            'menu': 'register',
-            'tampilregister' : formregister,
-        }
-        return render(request, 'data/register.html', context)
+    formregister = RegisterForm()
+    if request.method == 'POST':
+        formregister = RegisterForm(request.POST)
+        if formregister.is_valid():
+            nilaiusername = formregister.cleaned_data.get('username')
+            messages.success(request, f'Username Anda adalah {nilaiusername}')
+            group_custumer = formregister.save()
+            grup = Group.objects.get(name='custumer')
+            group_custumer.groups.add(grup)
+            return redirect('login')
+    context = {
+        'judul': 'Halaman Register',
+        'menu': 'register',
+        'tampilregister' : formregister,
+    }
+    return render(request, 'data/register.html', context)
 
 @login_required(login_url='login')
+def userPage(request):
+    context = {}
+    return render(request, 'data/user.html', context)
+
+@login_required(login_url='login')
+# @ijinkan_pengguna(yang_diizinkan['admin'])
+@pilihan_login
 def home(request):
     list_custumer = Custumer.objects.all()
     list_order = Order.objects.all()
@@ -76,6 +83,7 @@ def home(request):
     return render(request, 'data/dashboard.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['admin'])
 def products(request):
     list_product = Product.objects.order_by('-date_created')
     context = {
@@ -128,6 +136,7 @@ def deleteProduct(request, pk):
     return render(request, 'data/delete_product.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['admin'])
 def custumer(request,pk):
     detailcustumer = Custumer.objects.get(id=pk)
     order_custumer = detailcustumer.order_set.all()
@@ -161,6 +170,7 @@ def custumer(request,pk):
     return render(request, 'data/custumer.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['admin'])
 def createOrder(request):
     formorder = OrderForm()
     if request.method == 'POST':
@@ -175,6 +185,7 @@ def createOrder(request):
     return render(request, 'data/order_form.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['admin'])
 def updateOrder(request, pk):
     order = Order.objects.get(id=pk)
     formorder = OrderForm(instance=order)
@@ -191,6 +202,7 @@ def updateOrder(request, pk):
     return render(request, 'data/order_form.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['admin'])
 def deleteOrder(request, pk):
     orderhapus = Order.objects.get(id=pk)
     if request.method == 'POST':
