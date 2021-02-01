@@ -28,7 +28,7 @@ def pilihan_login(fungsi_awal):
     def perubahan_halaman(request, *args, **kwargs):
         group = None
         if request.user.groups.exists():
-            group = request.user.groups.all()[0].name
+            group = request.user.groups.all()[0].name 
 
         if group == 'custumer':
             return redirect('user-page')

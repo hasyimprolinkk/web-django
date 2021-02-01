@@ -48,6 +48,9 @@ def registerPage (request):
             group_custumer = formregister.save()
             grup = Group.objects.get(name='custumer')
             group_custumer.groups.add(grup)
+            Custumer.objects.create(
+                user=group_custumer,
+                name=group_custumer.username)
             return redirect('login')
     context = {
         'judul': 'Halaman Register',
@@ -57,8 +60,18 @@ def registerPage (request):
     return render(request, 'data/register.html', context)
 
 @login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['custumer'])
 def userPage(request):
-    context = {}
+    order_custumer = request.user.custumer.order_set.all()
+    total_orders = order_custumer.count()
+    delivered = order_custumer.filter(status = 'Delivered').count()
+    pending = order_custumer.filter(status = 'Pending').count()
+    context = {
+        'data_order_custumer':order_custumer,
+        'data_total_orders': total_orders,
+        'data_delivered' : delivered,
+        'data_pending' : pending,
+    }
     return render(request, 'data/user.html', context)
 
 @login_required(login_url='login')
@@ -213,5 +226,4 @@ def deleteOrder(request, pk):
         'dataorderdelete' : orderhapus,
     }
     return render(request, 'data/delete_form.html', context)
-
 
