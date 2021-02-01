@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Order, Product
+from .models import Order, Product, Custumer
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -38,4 +38,9 @@ class ProductForm(ModelForm):
             'category': 'Kategori',
             'description': 'Deskripsi',
         }
-        
+
+class CustumerForm(ModelForm):
+    class Meta:
+        model = Custumer
+        fields= '__all__'
+        exclude = ['user']

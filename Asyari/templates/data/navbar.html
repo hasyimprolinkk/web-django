@@ -13,6 +13,10 @@
             <a class="nav-link {% if menu == 'products' %} active {% endif %}" href="{% url 'products' %}">Product</a>
             {% comment %} <a class="nav-link {% if menu == 'custumer' %} active {% endif %}"
                 href="{% url 'custumer' %}">Custumer</a> {% endcomment %}
+        {% else %}
+            {% if user.is_authenticated %}
+            <a class="nav-link {% if menu == 'settings' %} active {% endif %}" href="{% url 'account-page' %}">Settings</a>
+            {% endif %}
         {% endif %}
         </div>
     </div>

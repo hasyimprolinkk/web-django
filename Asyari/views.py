@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 
 from .models import *
-from .forms import OrderForm, ProductForm, RegisterForm
+from .forms import OrderForm, ProductForm, RegisterForm, CustumerForm
 from .filters import OrderFilter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -73,6 +73,21 @@ def userPage(request):
         'data_pending' : pending,
     }
     return render(request, 'data/user.html', context)
+
+@login_required(login_url='login')
+@ijinkan_pengguna(yang_diizinkan=['custumer'])
+def accountSetting(request):
+    datacustumer = request.user.custumer
+    form = CustumerForm(instance = datacustumer)
+    if request.method == 'POST':
+        form = CustumerForm(request.POST, request.FILES, instance=datacustumer)
+        if form.is_valid:
+            form.save()
+    context = {
+    'menu': 'settings',
+    'formcustumer': form,
+    }
+    return render(request, 'data/account_setting.html', context)
 
 @login_required(login_url='login')
 # @ijinkan_pengguna(yang_diizinkan['admin'])
