@@ -48,9 +48,7 @@ def registerPage (request):
             group_custumer = formregister.save()
             grup = Group.objects.get(name='custumer')
             group_custumer.groups.add(grup)
-            Custumer.objects.create(
-                user=group_custumer,
-                name=group_custumer.username)
+            Custumer.objects.create(user=group_custumer, name=group_custumer.username)
             return redirect('login')
     context = {
         'judul': 'Halaman Register',
